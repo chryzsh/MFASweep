@@ -538,8 +538,10 @@ Function Invoke-M365WebPortalAuth{
         }
 
         # Optionally, you can extract the specific MFA method used (authMethodId)
-        $authMethodId = $AuthRequest.Content -match '"authMethodId":"([^"]+)"' | Out-Null
-        $mfaMethod = $matches[1]
+        $mfaMethod = $null
+        if ($AuthRequest.Content -match '"authMethodId":"([^"]+)"') {
+            $mfaMethod = $matches[1]
+        }
         if ($mfaMethod) {
             Write-Host -ForegroundColor DarkYellow "[***] MFA Method Used: $mfaMethod"
         }
@@ -735,6 +737,7 @@ Function Convert-M365EscapedUrlValue{
     Param(
 
     [Parameter(Position = 0, Mandatory = $True)]
+    [AllowEmptyString()]
     [string]
     $Value = ""
 
